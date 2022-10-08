@@ -175,7 +175,7 @@ public class ImageIOBitmapEncoder implements BitmapEncoder {
     }
   }
 
-  private void dumpMetadata(IIOMetadata iiometa) {
+  protected void dumpMetadata(IIOMetadata iiometa) {
     String[] metanames = iiometa.getMetadataFormatNames();
     for (int j = 0; j < metanames.length; j++) {
       System.out.println("--->" + metanames[j]);

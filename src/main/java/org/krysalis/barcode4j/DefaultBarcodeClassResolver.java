@@ -17,6 +17,8 @@ package org.krysalis.barcode4j;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,8 +31,8 @@ import org.krysalis.barcode4j.tools.ZXingUtil;
  */
 public class DefaultBarcodeClassResolver implements BarcodeClassResolver {
 
-  private Map classes;
-  private Set mainIDs;
+  private Map<String, String> classes;
+  private Set<String> mainIDs;
 
   /**
    * Main constructor.
@@ -59,10 +61,6 @@ public class DefaultBarcodeClassResolver implements BarcodeClassResolver {
     registerBarcodeClass("postnet", "org.krysalis.barcode4j.impl.postnet.POSTNET", true);
     registerBarcodeClass("royal-mail-cbc", "org.krysalis.barcode4j.impl.fourstate.RoyalMailCBC", true);
     registerBarcodeClass("usps4cb", "org.krysalis.barcode4j.impl.fourstate.USPSIntelligentMail", true);
-    /*
-     * registerBarcodeClass("austpost",
-     * "org.krysalis.barcode4j.impl.fourstate.AustPost", true);
-     */
     registerBarcodeClass("pdf417", "org.krysalis.barcode4j.impl.pdf417.PDF417", true);
     registerBarcodeClass("datamatrix", "org.krysalis.barcode4j.impl.datamatrix.DataMatrix", true);
     if (ZXingUtil.isZxingAvailable()) {
@@ -93,8 +91,8 @@ public class DefaultBarcodeClassResolver implements BarcodeClassResolver {
    */
   public void registerBarcodeClass(String id, String classname, boolean mainID) {
     if (this.classes == null) {
-      this.classes = new java.util.HashMap();
-      this.mainIDs = new java.util.HashSet();
+      this.classes = new HashMap<>();
+      this.mainIDs = new HashSet<>();
     }
     this.classes.put(id.toLowerCase(), classname);
     if (mainID) {
@@ -105,40 +103,40 @@ public class DefaultBarcodeClassResolver implements BarcodeClassResolver {
   /**
    * @see org.krysalis.barcode4j.BarcodeClassResolver#resolve(String)
    */
+  @SuppressWarnings("unchecked")
   @Override
-  public Class resolve(String name) throws ClassNotFoundException {
+  public Class<BarcodeGenerator> resolve(String name) throws ClassNotFoundException {
     String clazz = null;
     if (this.classes != null) {
-      clazz = (String) this.classes.get(name.toLowerCase());
+      clazz = this.classes.get(name.toLowerCase());
     }
     if (clazz == null) {
       clazz = name;
     }
-    Class cl = Class.forName(clazz);
-    return cl;
+    return (Class<BarcodeGenerator>) Class.forName(clazz);
   }
 
   /**
    * @see org.krysalis.barcode4j.BarcodeClassResolver#resolveBean(String)
    */
+  @SuppressWarnings("unchecked")
   @Override
-  public Class resolveBean(String name) throws ClassNotFoundException {
+  public Class<BarcodeGenerator> resolveBean(String name) throws ClassNotFoundException {
     String clazz = null;
     if (this.classes != null) {
-      clazz = (String) this.classes.get(name.toLowerCase());
+      clazz = this.classes.get(name.toLowerCase());
     }
     if (clazz == null) {
       clazz = name;
     }
-    Class cl = Class.forName(clazz + "Bean");
-    return cl;
+    return (Class<BarcodeGenerator>) Class.forName(clazz + "Bean");
   }
 
   /**
    * @see org.krysalis.barcode4j.BarcodeClassResolver#getBarcodeNames()
    */
   @Override
-  public Collection getBarcodeNames() {
+  public Collection<String> getBarcodeNames() {
     return Collections.unmodifiableCollection(this.mainIDs);
   }
 }

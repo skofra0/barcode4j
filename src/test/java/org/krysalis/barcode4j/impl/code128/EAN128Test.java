@@ -40,7 +40,7 @@ public class EAN128Test extends TestCase {
     // Test FNC1 position and basic stuff
     impl = new EAN128LogicImpl(ChecksumMode.CP_AUTO, null);
     impl.setMessage("8100712345" + GS + "2112345678");
-    assertEquals("(81)00712345(21)12345678", impl.getHumanReadableMsg());
+    assertEquals("(8100)712345(21)12345678", impl.getHumanReadableMsg());
     assertEquals(FNC1 + "8100712345" + FNC1 + "2112345678", impl.getCode128Msg());
 
     // Test check digit generation (cd0)

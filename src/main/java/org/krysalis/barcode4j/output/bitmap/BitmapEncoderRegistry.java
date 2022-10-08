@@ -15,7 +15,6 @@
  */
 package org.krysalis.barcode4j.output.bitmap;
 
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -26,7 +25,7 @@ import java.util.Set;
  */
 public class BitmapEncoderRegistry {
 
-  private static Set encoders = new java.util.TreeSet();
+  private static Set<Entry> encoders = new java.util.TreeSet<>();
 
   static {
     register(org.krysalis.barcode4j.output.bitmap.ImageIOBitmapEncoder.class.getName(), 0, false);
@@ -39,7 +38,7 @@ public class BitmapEncoderRegistry {
     throw new UnsupportedOperationException();
   }
 
-  private static class Entry implements Comparable {
+  private static class Entry implements Comparable<Entry> {
     private BitmapEncoder encoder;
     private int priority;
 
@@ -48,11 +47,9 @@ public class BitmapEncoderRegistry {
       this.priority = priority;
     }
 
-    /** {@inheritDoc} */
     @Override
-    public int compareTo(Object o) {
-      Entry e = (Entry) o;
-      return e.priority - this.priority; // highest priority first
+    public int compareTo(Entry o) {
+      return o.priority - this.priority; // highest priority first
     }
 
   }
@@ -60,13 +57,11 @@ public class BitmapEncoderRegistry {
   private static synchronized void register(String classname, int priority, boolean complain) {
     boolean failed = false;
     try {
-      Class clazz = Class.forName(classname);
-      BitmapEncoder encoder = (BitmapEncoder) clazz.newInstance();
+      Class<?> clazz = Class.forName(classname);
+      BitmapEncoder encoder = (BitmapEncoder) clazz.getConstructor().newInstance();
       encoders.add(new Entry(encoder, priority));
     } catch (Exception e) {
       failed = true;
-    } catch (LinkageError le) {
-      failed = true; // NoClassDefFoundError for example
     }
     if (failed) {
       if (complain) {
@@ -115,9 +110,7 @@ public class BitmapEncoderRegistry {
    * @return true if the MIME type is supported
    */
   public static boolean supports(String mime) {
-    Iterator i = encoders.iterator();
-    while (i.hasNext()) {
-      Entry entry = (Entry) i.next();
+    for (Entry entry : encoders) {
       BitmapEncoder encoder = entry.encoder;
       if (supports(encoder, mime)) {
         return true;
@@ -134,9 +127,7 @@ public class BitmapEncoderRegistry {
    *         if no suitable BitmapEncoder is available)
    */
   public static BitmapEncoder getInstance(String mime) {
-    Iterator i = encoders.iterator();
-    while (i.hasNext()) {
-      Entry entry = (Entry) i.next();
+    for (Entry entry : encoders) {
       BitmapEncoder encoder = entry.encoder;
       if (supports(encoder, mime)) {
         return encoder;
@@ -151,11 +142,9 @@ public class BitmapEncoderRegistry {
    * 
    * @return a Set of Strings (MIME types)
    */
-  public static Set getSupportedMIMETypes() {
-    Set mimes = new java.util.HashSet();
-    Iterator i = encoders.iterator();
-    while (i.hasNext()) {
-      Entry entry = (Entry) i.next();
+  public static Set<String> getSupportedMIMETypes() {
+    Set<String> mimes = new java.util.HashSet<>();
+    for (Entry entry : encoders) {
       BitmapEncoder encoder = entry.encoder;
       String[] s = encoder.getSupportedMIMETypes();
       for (int j = 0; j < s.length; j++) {

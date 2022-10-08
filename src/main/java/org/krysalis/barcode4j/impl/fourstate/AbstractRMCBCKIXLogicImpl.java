@@ -15,6 +15,7 @@
  */
 package org.krysalis.barcode4j.impl.fourstate;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import org.krysalis.barcode4j.ChecksumMode;
  */
 public abstract class AbstractRMCBCKIXLogicImpl extends AbstractFourStateLogicImpl {
 
-  private static final Map CHARSET = new java.util.HashMap();
+  private static final Map<String, String> CHARSET = new HashMap<>();
 
   static {
     // 0 = track only, 1 = ascender, 2 = descender, 3 = 1 + 2 = full height
@@ -78,23 +79,23 @@ public abstract class AbstractRMCBCKIXLogicImpl extends AbstractFourStateLogicIm
    * 
    * @param mode checksum mode
    */
-  public AbstractRMCBCKIXLogicImpl(ChecksumMode mode) {
+  protected AbstractRMCBCKIXLogicImpl(ChecksumMode mode) {
     super(mode);
   }
 
   /** {@inheritDoc} */
   @Override
   protected String[] encodeHighLevel(String msg) {
-    List codewords = new java.util.ArrayList(msg.length());
+    List<String> codewords = new java.util.ArrayList<>(msg.length());
     for (int i = 0, c = msg.length(); i < c; i++) {
       String ch = msg.substring(i, i + 1);
-      String code = (String) CHARSET.get(ch);
+      String code = CHARSET.get(ch);
       if (code == null) {
         throw new IllegalArgumentException("Illegal character: " + ch);
       }
       codewords.add(code);
     }
-    return (String[]) codewords.toArray(new String[codewords.size()]);
+    return codewords.toArray(new String[codewords.size()]);
   }
 
 }

@@ -33,7 +33,7 @@ public interface BarcodeClassResolver {
    * @return Class The class requested
    * @throws ClassNotFoundException If the class could not be resolved
    */
-  Class resolve(String name) throws ClassNotFoundException;
+  Class<BarcodeGenerator> resolve(String name) throws ClassNotFoundException;
 
   /**
    * Returns the Class object of a Barcode bean implementation.
@@ -42,13 +42,13 @@ public interface BarcodeClassResolver {
    * @return Class The class requested
    * @throws ClassNotFoundException If the class could not be resolved
    */
-  Class resolveBean(String name) throws ClassNotFoundException;
+  Class<BarcodeGenerator> resolveBean(String name) throws ClassNotFoundException;
 
   /**
    * Return the names of all registered barcode types.
    * 
    * @return the names as a Collection of java.lang.String instances.
    */
-  Collection getBarcodeNames();
+  Collection<String> getBarcodeNames();
 
 }

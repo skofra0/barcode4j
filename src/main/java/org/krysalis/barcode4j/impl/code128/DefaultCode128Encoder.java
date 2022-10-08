@@ -31,7 +31,7 @@ public class DefaultCode128Encoder implements Code128Encoder, Code128Constants {
   private static final int FNC_1 = 102;
   private static final int FNC_2 = 97;
   private static final int FNC_3 = 96;
-  private static final int FNC_4 = 0xF4;
+  // private static final int FNC_4 = 0xF4
   private static final int SHIFT = 98;
 
   private int codesets;

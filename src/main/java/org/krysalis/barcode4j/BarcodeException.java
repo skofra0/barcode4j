@@ -23,6 +23,8 @@ package org.krysalis.barcode4j;
  */
 public class BarcodeException extends Exception {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Constructor for BarcodeException.
    * 

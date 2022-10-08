@@ -76,7 +76,7 @@ public class BarcodeUtil {
    * @throws ConfigurationException if something's wrong wth the configuration
    */
   public static BarcodeGenerator createBarcodeGenerator(Configuration cfg, BarcodeClassResolver classResolver) throws BarcodeException, ConfigurationException {
-    Class cl = null;
+    Class<BarcodeGenerator> cl = null;
     try {
       // First, check Configuration directly
       String type = cfg.getName();
@@ -111,7 +111,7 @@ public class BarcodeUtil {
       }
 
       // Instantiate the BarcodeGenerator
-      BarcodeGenerator gen = (BarcodeGenerator) cl.newInstance();
+      BarcodeGenerator gen = cl.getConstructor().newInstance();
       try {
         ContainerUtil.configure(gen, (child != null ? child : cfg));
       } catch (IllegalArgumentException iae) {
@@ -123,10 +123,8 @@ public class BarcodeUtil {
         throw new RuntimeException("Cannot initialize barcode generator. " + e.getMessage());
       }
       return gen;
-    } catch (IllegalAccessException ia) {
-      throw new RuntimeException("Problem while instantiating a barcode" + " generator: " + ia.getMessage());
-    } catch (InstantiationException ie) {
-      throw new BarcodeException("Error instantiating a barcode generator: " + cl.getName());
+    } catch ( IllegalArgumentException | ReflectiveOperationException ia) {
+      throw new RuntimeException("Error instantiating a barcode generator: " + cl.getName() + ia.getMessage());
     }
   }
 

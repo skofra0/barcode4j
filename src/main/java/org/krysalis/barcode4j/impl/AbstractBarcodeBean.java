@@ -37,7 +37,7 @@ public abstract class AbstractBarcodeBean implements BarcodeGenerator {
   /** Font size in mm */
   protected double fontSize = UnitConv.pt2mm(8); // 8pt
   /** Font name */
-  protected String fontName = "Helvetica"; // "OCR-B,Helvetica,Arial";
+  protected String fontName = "Helvetica"; // "OCR-B,Helvetica,Arial"
   /** True if quiet zone should be rendered */
   protected boolean doQuietZone = true;
   /** Width of the quiet zone left and right of the barcode in mm */
@@ -211,7 +211,7 @@ public abstract class AbstractBarcodeBean implements BarcodeGenerator {
    * @param height the height of the vertical quiet zone (in mm)
    */
   public void setVerticalQuietZone(double height) {
-    this.quietZoneVertical = new Double(height);
+    this.quietZoneVertical = height;
   }
 
   /**
@@ -267,10 +267,6 @@ public abstract class AbstractBarcodeBean implements BarcodeGenerator {
   public void setFontName(String name) {
     this.fontName = name;
   }
-
-  /** {@inheritDoc} */
-  @Override
-  public abstract void generateBarcode(CanvasProvider canvas, String msg);
 
   /** {@inheritDoc} */
   @Override

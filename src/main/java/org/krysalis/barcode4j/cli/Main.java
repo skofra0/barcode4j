@@ -39,7 +39,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
@@ -64,9 +63,7 @@ public class Main {
 
   private static final String[] APP_HEADER = {"Barcode4J command-line application, Version " + getVersion(), ""};
 
-  /** stdout for this application (default: System.out) */
   public static PrintStream stdout = System.out;
-  /** stderr for this application (default: System.err) */
   public static PrintStream stderr = System.err;
 
   private static ExitHandler exitHandler = new DefaultExitHandler();
@@ -202,7 +199,6 @@ public class Main {
   private Options getOptions() {
     if (options == null) {
       this.options = new Options();
-      Option opt;
        
       OptionBuilder.withLongOpt("verbose");
       OptionBuilder.withDescription("enable debug output");
@@ -313,7 +309,7 @@ public class Main {
     printAppHeader();
 
     // Get a list of additional supported MIME types
-    Set knownMimes = new java.util.HashSet();
+    Set<String> knownMimes = new java.util.HashSet<>();
     knownMimes.add(null);
     knownMimes.add("");
     knownMimes.add(MimeTypes.MIME_PNG);
@@ -322,14 +318,14 @@ public class Main {
     knownMimes.add(MimeTypes.MIME_TIFF);
     knownMimes.add(MimeTypes.MIME_GIF);
     knownMimes.add(MimeTypes.MIME_BMP);
-    Set additionalMimes = BitmapEncoderRegistry.getSupportedMIMETypes();
+    Set<String> additionalMimes = BitmapEncoderRegistry.getSupportedMIMETypes();
     additionalMimes.removeAll(knownMimes);
 
     HelpFormatter help = new HelpFormatter();
     final String unavailable = " (unavailable)";
     help.printHelp(writer, HelpFormatter.DEFAULT_WIDTH, "java -jar barcode4j.jar " + "[-v] [[-s <symbology>]|[-c <cfg-file>]] [-f <format>] " + "[-d <dpi>] [-bw] [-o <file>] <message>", null, getOptions(), HelpFormatter.DEFAULT_LEFT_PAD, HelpFormatter.DEFAULT_DESC_PAD,
         "\nValid output formats:" + "\nSVG: " + MimeTypes.MIME_SVG + ", svg" + "\nEPS: " + MimeTypes.MIME_EPS + ", eps" + "\nPNG: " + MimeTypes.MIME_PNG + ", png" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_PNG) ? "" : unavailable) + "\nTIFF: " + MimeTypes.MIME_TIFF + ", tiff, tif" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_TIFF) ? "" : unavailable) + "\nJPEG: " + MimeTypes.MIME_JPEG + ", jpeg, jpg" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_JPEG) ? "" : unavailable) + "\nGIF: "
-            + MimeTypes.MIME_GIF + ", gif" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_GIF) ? "" : unavailable) + "\nBMP: " + MimeTypes.MIME_BMP + ", bmp" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_BMP) ? "" : unavailable) + (additionalMimes.size() > 0 ? "\nAdditional supported formats:\n" + additionalMimes : "") + "\n" + "\nIf -o is omitted the output is written to stdout.");
+            + MimeTypes.MIME_GIF + ", gif" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_GIF) ? "" : unavailable) + "\nBMP: " + MimeTypes.MIME_BMP + ", bmp" + (BitmapEncoderRegistry.supports(MimeTypes.MIME_BMP) ? "" : unavailable) + (!additionalMimes.isEmpty() ? "\nAdditional supported formats:\n" + additionalMimes : "") + "\n" + "\nIf -o is omitted the output is written to stdout.");
     writer.flush();
 
   }

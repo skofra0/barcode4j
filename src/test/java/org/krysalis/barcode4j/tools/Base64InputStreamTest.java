@@ -77,8 +77,7 @@ public class Base64InputStreamTest extends TestCase {
       // expected
     }
 
-    try {
-      new Base64InputStream(null);
+    try (Base64InputStream is = new Base64InputStream(null)) {
       fail("Expected NullPointerException");
     } catch (NullPointerException npe) {
       // expected

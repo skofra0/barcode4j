@@ -38,14 +38,15 @@ public class EAN128AI {
   public static final byte TYPECD = 5; // Check digit
   private final static String[] typeToString = {"an", "n", "a", "d", "e", "cd"};
 
-  // public static final byte TYPEAlphaNum421 = 7;
+  // TYPEAlphaNum421 = 7
 
   String id;
   byte lenID, lenMinAll, lenMaxAll;
   byte minLenAfterVariableLen;
 
   byte[] lenMin, lenMax, type, checkDigitStart;
-  boolean fixed = false, canDoChecksumADD = false;
+  boolean fixed = false;
+  boolean canDoChecksumADD = false;
 
   private static String[] fixedLenTable = new String[] {"00", "01", "02", "03", "04", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "31", "32", "33", "34", "35", "36", "41"};
   private static byte[] fixedLenValueTable = new byte[] {20, 16, 16, 16, 18, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4, 10, 10, 10, 10, 10, 10, 16};
@@ -54,6 +55,9 @@ public class EAN128AI {
   private static boolean propertiesLoaded = false;
 
   private static class AIProperties extends Properties {
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     public synchronized Object put(Object arg0, Object arg1) {
       EAN128AI ai = parseSpecPrivate((String) arg0, (String) arg1);
@@ -83,7 +87,6 @@ public class EAN128AI {
     for (int i = fixedLenValueTable.length - 1; i >= 0; i--) {
       initFixedLen(fixedLenTable[i], (byte) (fixedLenValueTable[i] - 2));
     }
-    // loadProperties();
   }
 
   public static synchronized void loadProperties() throws Exception {
@@ -96,7 +99,6 @@ public class EAN128AI {
     try {
       InputStream is = EAN128AI.class.getResourceAsStream(filename);
       if (is == null) {
-        // System.err.println(filename + " could not be loaded with class.getResourceAsStream()");
         is = EAN128AI.class.getClassLoader().getResourceAsStream(filename);
       }
       if (is != null) {
@@ -106,7 +108,6 @@ public class EAN128AI {
           is.close();
         }
       } else {
-        // System.err.println(filename + " could not be loaded with getClassLoader().getResourceAsStream()");
         // The getResourceAsStream variants do not work if an applet is loading
         // several jars from different directories (as in examples\demo-applet\html\index.html)!
         // ResourceBundle does this job. It seems to have more privileges.
@@ -114,9 +115,9 @@ public class EAN128AI {
         // but it works.
         String rbName = EAN128AI.class.getPackage().getName() + "." + bundlename;
         ResourceBundle rb = ResourceBundle.getBundle(rbName);
-        Enumeration keys = rb.getKeys();
+        Enumeration<String> keys = rb.getKeys();
         while (keys.hasMoreElements()) {
-          String key = (String) keys.nextElement();
+          String key = keys.nextElement();
           p.put(key, rb.getObject(key));
         }
       }
@@ -140,15 +141,15 @@ public class EAN128AI {
     lenMinAll = lenMaxAll = minLenAfterVariableLen = 0;
     int idxVarLen = type.length;
     int idxFirstChecksum = -1;
-    // canDoChecksumADD = true;
     for (int i = 0; i < type.length; i++) {
       lenMinAll += lenMin[i];
       lenMaxAll += lenMax[i];
       if (i > idxVarLen)
         minLenAfterVariableLen += lenMin[i];
       if (lenMin[i] != lenMax[i]) {
-        if (idxVarLen < type.length)
-          throw new IllegalArgumentException("Only one Part with var len!"); // TODO
+        if (idxVarLen < type.length) {
+          throw new IllegalArgumentException("Only one Part with var len!");
+        }
         idxVarLen = i;
       }
       if (idxFirstChecksum == -1 && type[i] == TYPECD)
@@ -162,9 +163,6 @@ public class EAN128AI {
     fixed = true;
   }
 
-  // public boolean isCheckDigit(int i) {
-  // return (type[i] == TYPECDWight31 || type[i] == TYPECDWight1);
-  // }
   private static void checkFixed(EAN128AI aiNew, EAN128AI aiOld) {
     if (aiOld.fixed && !aiNew.fixed) {
       if (aiNew.lenMaxAll != aiNew.lenMinAll || aiNew.lenID + aiNew.lenMinAll != aiOld.lenID + aiOld.lenMinAll) {
@@ -174,13 +172,13 @@ public class EAN128AI {
     }
   }
 
-  private static void SetAIHere(EAN128AI ai, Object[] aitParent) {
+  private static void setAIHere(EAN128AI ai, Object[] aitParent) {
     for (int idx = 0; idx <= 9; idx++) {
-      SetAIHere(ai, aitParent, idx);
+      setAIHere(ai, aitParent, idx);
     }
   }
 
-  private static void SetAIHere(EAN128AI aiNew, Object[] aitParent, int idx) {
+  private static void setAIHere(EAN128AI aiNew, Object[] aitParent, int idx) {
     Object tmp = aitParent[idx];
     if (tmp instanceof EAN128AI) {
       EAN128AI aiOld = (EAN128AI) tmp;
@@ -191,7 +189,7 @@ public class EAN128AI {
         aitParent[idx] = aiNew;
       }
     } else { // tmp instanceof Object[]
-      SetAIHere(aiNew, (Object[]) tmp);
+      setAIHere(aiNew, (Object[]) tmp);
     }
   }
 
@@ -205,7 +203,7 @@ public class EAN128AI {
     for (int i = 0; i <= aiLastRelevantIdx; i++) {
       int idx = aiName.charAt(i) - '0';
       if (i == aiLastRelevantIdx) {
-        SetAIHere(ai, aitParent, idx);
+        setAIHere(ai, aitParent, idx);
       } else {
         tmp = aitParent[idx];
         if (tmp instanceof EAN128AI) {
@@ -368,15 +366,13 @@ public class EAN128AI {
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    StringBuffer ret = new StringBuffer();
+    StringBuilder ret = new StringBuilder();
     ret.append('(').append(id).append(")");
     for (int i = 0; i < lenMin.length; i++) {
       if (i != 0) {
         ret.append('+');
       }
       ret.append(getType(type[i]));
-      // if (checkDigit[i] == CheckDigit.CD11)
-      // ret.append("w1");
       if (type[i] < TYPEError) {
         ret.append(lenMin[i]);
         if (lenMin[i] != lenMax[i]) {

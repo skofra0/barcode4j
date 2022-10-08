@@ -15,6 +15,7 @@
  */
 package org.krysalis.barcode4j.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.avalon.framework.configuration.Configurable;
@@ -37,10 +38,10 @@ public abstract class ConfigurableBarcodeGenerator implements BarcodeGenerator, 
   /**
    * Contains all possible element names that may appear in barcode XML.
    */
-  public static final String[] BARCODE_ELEMENTS;
+  protected static final String[] BARCODE_ELEMENTS;
 
   static {
-    List elements = new java.util.ArrayList();
+    List<String> elements = new ArrayList<>();
     // All barcode names
     elements.addAll(BarcodeUtil.getInstance().getClassResolver().getBarcodeNames());
     // All configuration element names
@@ -83,7 +84,7 @@ public abstract class ConfigurableBarcodeGenerator implements BarcodeGenerator, 
     elements.add("codesets"); // Code128
     elements.add("bearer-bar-width"); // ITF-14
     elements.add("bearer-box"); // ITF-14
-    BARCODE_ELEMENTS = (String[]) elements.toArray(new String[elements.size()]);
+    BARCODE_ELEMENTS = elements.toArray(new String[elements.size()]);
   }
 
   /** Proxy target. Barcode bean to configure. */

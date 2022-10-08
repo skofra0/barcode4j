@@ -27,16 +27,15 @@ import org.krysalis.barcode4j.ClassicBarcodeLogicHandler;
  *
  * @author Dietmar Bürkle, Jeremias Maerki (generateBarcodeLogic)
  */
-public class EAN128LogicImpl { // extends Code128LogicImpl{
+public class EAN128LogicImpl {
   private static final byte MAX_LENGTH = 48; // Max according to EAN128 specification.
 
-  private static final byte TYPENumTestCheckDigit = 4;
-  private static final byte TYPENumReplaceCheckDigit = 5;
-  private static final byte TYPENumAddCheckDigit = 6;
+  // TYPENumTestCheckDigit = 4
+  // TYPENumReplaceCheckDigit = 5
+  // TYPENumAddCheckDigit = 6
 
   private EAN128AI[] ais = null;
 
-  // GroupSeperator not Code128LogicImpl.FNC_1;
   private char groupSeparator = EAN128Bean.DEFAULT_GROUP_SEPARATOR;
 
   private char checkDigitMarker = EAN128Bean.DEFAULT_CHECK_DIGIT_MARKER;
@@ -210,7 +209,8 @@ public class EAN128LogicImpl { // extends Code128LogicImpl{
         throw getException("Variable length field \"" + msg.substring(offset + lenID, newOffset) + "\" too long! Length should be " + lenMax + " at the most!");
       }
     }
-    int start = offset + lenID, end;
+    int start = offset + lenID;
+    int end;
     for (byte i = 0; i < ai.type.length; i++, start = end) {
       startA[i + 1] = start;
       if (ai.lenMin[i] == ai.lenMax[i]) {
@@ -218,15 +218,6 @@ public class EAN128LogicImpl { // extends Code128LogicImpl{
       } else {
         end = newOffset - ai.minLenAfterVariableLen;
       }
-      // if (ai.checkDigit[i] != CheckDigit.CDNone && !doChecksumADD && checksumCHECK){
-      // char cd1 = CheckDigit.calcCheckdigit(msg, cdStart, start, ai.checkDigit[i]);
-      // char cd2 = msg.charAt(start);
-      // if (cd1 != cd2)
-      // throw getException("Checkdigit is wrong! Correct is " + cd1
-      // + " but I found " + cd2 + "!", msg.substring(cdStart, start));
-      // humanReadableMsg.append(cd1);
-      // code128Msg.append(cd1);
-      // } else if (ai.checkDigit[i] == CheckDigit.CDNone || !doChecksumADD) {
       if (doChecksumADD && i == ai.type.length - 1) { // ai.checkDigit[i] != CheckDigit.CDNone) {
         char c = CheckDigit.calcCheckdigit(msg, startA[ai.checkDigitStart[i]], start, CheckDigit.CD31);
         humanReadableMsg.append(c);
@@ -236,18 +227,8 @@ public class EAN128LogicImpl { // extends Code128LogicImpl{
         }
       } else {
         checkType(ai, i, msg, start, end, startA[ai.checkDigitStart[i]]);
-        // humanReadableMsg.append(msg.substring(startI, end));
-        // code128Msg.append(msg.substring(startI, end));
       }
     }
-    // if (doChecksumADD) {
-    // char c = CheckDigit.calcCheckdigit(msg, cdStart, newOffset, ai.checkDigit[ai.checkDigit.length-1]);
-    // humanReadableMsg.append(c);
-    // code128Msg.append(c);
-    // if (newOffset < msg.length() && msg.charAt(newOffset) == groupSeparator) {
-    // newOffset++;
-    // }
-    // }
     if (newOffset < msg.length() && isGroupSeparator(msg.charAt(newOffset))) {
       // TODO Needed for 8001?...
       newOffset++;
@@ -304,8 +285,10 @@ public class EAN128LogicImpl { // extends Code128LogicImpl{
         }
       }
       if (type == EAN128AI.TYPENumDate) {
-        char cm1 = msg.charAt(start + 2), cm2 = msg.charAt(start + 3);
-        char cd1 = msg.charAt(start + 4), cd2 = msg.charAt(start + 5);
+        char cm1 = msg.charAt(start + 2);
+        char cm2 = msg.charAt(start + 3);
+        char cd1 = msg.charAt(start + 4);
+        char cd2 = msg.charAt(start + 5);
         if ((cm1 == '0' && cm2 == '0') || (cm1 == '1' && cm2 > '2') || cm1 > '1') {
           throw getException("Illegal Month \"" + cm1 + cm2 + "\"!", msg.substring(start, start + 2));
         }
@@ -316,19 +299,6 @@ public class EAN128LogicImpl { // extends Code128LogicImpl{
     }
     humanReadableMsg.append(msg.substring(start, end));
     code128Msg.append(msg.substring(start, end));
-  }
-
-  private char getIDChar(String msg, int offset) {
-    char ret;
-    try {
-      ret = msg.charAt(offset);
-    } catch (Exception e) {
-      throw getException("Unable to read last ID: Message too short!");
-    }
-    if (!Character.isDigit(ret)) {
-      throw getException("Unable to read last ID: Characters must be numerical!");
-    }
-    return ret;
   }
 
   private IllegalArgumentException getException(String text) {

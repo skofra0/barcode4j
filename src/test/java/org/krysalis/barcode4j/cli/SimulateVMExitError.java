@@ -23,6 +23,8 @@ package org.krysalis.barcode4j.cli;
  */
 public class SimulateVMExitError extends Error {
 
+  private static final long serialVersionUID = 1L;
+
   public SimulateVMExitError() {
     super();
   }

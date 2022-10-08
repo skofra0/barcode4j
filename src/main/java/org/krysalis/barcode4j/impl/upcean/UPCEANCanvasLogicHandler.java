@@ -44,7 +44,7 @@ public class UPCEANCanvasLogicHandler implements ClassicBarcodeLogicHandler {
   private double groupx;
   private boolean inMsgGroup;
   private boolean inSupplemental;
-  private Stack groupStack = new Stack();
+  private Stack<BarGroup> groupStack = new Stack<>();
 
   /**
    * Main constructor.
@@ -159,7 +159,7 @@ public class UPCEANCanvasLogicHandler implements ClassicBarcodeLogicHandler {
   /** @see org.krysalis.barcode4j.ClassicBarcodeLogicHandler */
   @Override
   public void endBarGroup() {
-    BarGroup group = (BarGroup) groupStack.pop();
+    BarGroup group = groupStack.pop();
 
     if (group == BarGroup.UPC_EAN_GROUP) {
       inMsgGroup = false;
@@ -170,7 +170,7 @@ public class UPCEANCanvasLogicHandler implements ClassicBarcodeLogicHandler {
       int colonPos = lastgroup.indexOf(":");
       String grouptext = lastgroup;
       if (colonPos >= 0) {
-        String lead = new Character(grouptext.charAt(0)).toString();
+        String lead = Character.toString(grouptext.charAt(0));
         drawLeadChar(lead);
         grouptext = grouptext.substring(colonPos + 1);
       }
