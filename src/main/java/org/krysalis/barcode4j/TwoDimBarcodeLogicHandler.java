@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,14 +25,14 @@ package org.krysalis.barcode4j;
  */
 public interface TwoDimBarcodeLogicHandler extends ClassicBarcodeLogicHandler {
 
-    /**
-     * Signals the start of a new row in the barcode.
-     */
-    void startRow();
-    
-    /**
-     * Signals the end of a row in the barcode.
-     */
-    void endRow();
-    
+  /**
+   * Signals the start of a new row in the barcode.
+   */
+  void startRow();
+
+  /**
+   * Signals the end of a row in the barcode.
+   */
+  void endRow();
+
 }

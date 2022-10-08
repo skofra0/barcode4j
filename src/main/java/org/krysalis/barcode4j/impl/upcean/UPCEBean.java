@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,23 +25,21 @@ import org.krysalis.barcode4j.BarcodeDimension;
  */
 public class UPCEBean extends UPCEANBean {
 
-    /** @see org.krysalis.barcode4j.impl.upcean.UPCEAN */
-    public UPCEANLogicImpl createLogicImpl() {
-        return new UPCELogicImpl(getChecksumMode());
-    }
+  /** @see org.krysalis.barcode4j.impl.upcean.UPCEAN */
+  @Override
+  public UPCEANLogicImpl createLogicImpl() {
+    return new UPCELogicImpl(getChecksumMode());
+  }
 
-    /** @see org.krysalis.barcode4j.impl.upcean.UPCEAN */
-    public BarcodeDimension calcDimensions(String msg) {
-        double width = 3 * moduleWidth; //left guard
-        width += 6 * 7 * moduleWidth;
-        width += 6 * moduleWidth; //right guard
-        width += supplementalWidth(msg);
-        final double qz = (hasQuietZone() ? quietZone : 0);
-        return new BarcodeDimension(width, getHeight(), 
-                width + (2 * qz), getHeight(), 
-                quietZone, 0.0);
-    }
-
-
+  /** @see org.krysalis.barcode4j.impl.upcean.UPCEAN */
+  @Override
+  public BarcodeDimension calcDimensions(String msg) {
+    double width = 3 * moduleWidth; // left guard
+    width += 6 * 7 * moduleWidth;
+    width += 6 * moduleWidth; // right guard
+    width += supplementalWidth(msg);
+    final double qz = (hasQuietZone() ? quietZone : 0);
+    return new BarcodeDimension(width, getHeight(), width + (2 * qz), getHeight(), quietZone, 0.0);
+  }
 
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,54 +29,50 @@ import org.krysalis.barcode4j.output.CanvasProvider;
  */
 public class RoyalMailCBCBean extends AbstractFourStateBean {
 
-    /** The default module width for RoyalMail. */
-    protected static final double DEFAULT_MODULE_WIDTH = 0.53; //mm
+  /** The default module width for RoyalMail. */
+  protected static final double DEFAULT_MODULE_WIDTH = 0.53; // mm
 
-    /** Create a new instance. */
-    public RoyalMailCBCBean() {
-        super();
-        this.msgPos = HumanReadablePlacement.HRP_NONE; //Different default than normal
-        setModuleWidth(DEFAULT_MODULE_WIDTH);
-        setTrackHeight(1.25f); //mm
-        setAscenderHeight(1.8f); //mm
-        setQuietZone(2.0); //mm
-        setIntercharGapWidth(getModuleWidth());
-        updateHeight();
-    }
-    
-    /** {@inheritDoc} */
-    public void setMsgPosition(HumanReadablePlacement placement) {
-        //nop, no human-readable with this symbology!!!
-    }
+  /** Create a new instance. */
+  public RoyalMailCBCBean() {
+    super();
+    this.msgPos = HumanReadablePlacement.HRP_NONE; // Different default than normal
+    setModuleWidth(DEFAULT_MODULE_WIDTH);
+    setTrackHeight(1.25f); // mm
+    setAscenderHeight(1.8f); // mm
+    setQuietZone(2.0); // mm
+    setIntercharGapWidth(getModuleWidth());
+    updateHeight();
+  }
 
-    /** {@inheritDoc} */
-    public void generateBarcode(CanvasProvider canvas, String msg) {
-        if ((msg == null) 
-                || (msg.length() == 0)) {
-            throw new NullPointerException("Parameter msg must not be empty");
-        }
+  /** {@inheritDoc} */
+  @Override
+  public void setMsgPosition(HumanReadablePlacement placement) {
+    // nop, no human-readable with this symbology!!!
+  }
 
-        FourStateLogicHandler handler = 
-                new FourStateLogicHandler(this, new Canvas(canvas));
-
-        RoyalMailCBCLogicImpl impl = new RoyalMailCBCLogicImpl(
-                getChecksumMode());
-        impl.generateBarcodeLogic(handler, msg);
+  /** {@inheritDoc} */
+  @Override
+  public void generateBarcode(CanvasProvider canvas, String msg) {
+    if ((msg == null) || (msg.length() == 0)) {
+      throw new NullPointerException("Parameter msg must not be empty");
     }
 
-    /** {@inheritDoc} */
-    public BarcodeDimension calcDimensions(String msg) {
-        String modMsg = RoyalMailCBCLogicImpl.removeStartStop(msg);
-        int additional = (getChecksumMode() == ChecksumMode.CP_ADD 
-                || getChecksumMode() == ChecksumMode.CP_AUTO) ? 1 : 0;
-        final int len = modMsg.length() + additional;
-        final double width = (((len * 4) + 2) * moduleWidth) 
-                + (((len * 4) + 1) * getIntercharGapWidth());
-        final double qzh = (hasQuietZone() ? getQuietZone() : 0);        
-        final double qzv = (hasQuietZone() ? getVerticalQuietZone() : 0);        
-        return new BarcodeDimension(width, getBarHeight(), 
-                width + (2 * qzh), getBarHeight() + (2 * qzv), 
-                qzh, qzv);
-    }
+    FourStateLogicHandler handler = new FourStateLogicHandler(this, new Canvas(canvas));
+
+    RoyalMailCBCLogicImpl impl = new RoyalMailCBCLogicImpl(getChecksumMode());
+    impl.generateBarcodeLogic(handler, msg);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public BarcodeDimension calcDimensions(String msg) {
+    String modMsg = RoyalMailCBCLogicImpl.removeStartStop(msg);
+    int additional = (getChecksumMode() == ChecksumMode.CP_ADD || getChecksumMode() == ChecksumMode.CP_AUTO) ? 1 : 0;
+    final int len = modMsg.length() + additional;
+    final double width = (((len * 4) + 2) * moduleWidth) + (((len * 4) + 1) * getIntercharGapWidth());
+    final double qzh = (hasQuietZone() ? getQuietZone() : 0);
+    final double qzv = (hasQuietZone() ? getVerticalQuietZone() : 0);
+    return new BarcodeDimension(width, getBarHeight(), width + (2 * qzh), getBarHeight() + (2 * qzv), qzh, qzv);
+  }
 
 }

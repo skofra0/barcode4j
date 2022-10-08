@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +20,7 @@ package org.krysalis.barcode4j.impl.qr;
 
 import java.awt.Dimension;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.krysalis.barcode4j.TwoDimBarcodeLogicHandler;
 
@@ -37,80 +38,77 @@ import com.google.zxing.qrcode.encoder.QRCode;
  */
 public class QRLogicImpl implements QRConstants {
 
-    /**
-     * Generates the barcode logic.
-     * @param logic the logic handler to receive generated events
-     * @param msg the message to encode
-     * @param errorCorrectionLevel the error correction level (one of L, M, Q, H)
-     * @param encoding the message encoding
-     * @param minSize the minimum symbol size constraint or null for no constraint
-     * @param maxSize the maximum symbol size constraint or null for no constraint
-     */
-    public void generateBarcodeLogic(TwoDimBarcodeLogicHandler logic, String msg,
-            String encoding,
-            char errorCorrectionLevel,
-            Dimension minSize, Dimension maxSize) {
+  /**
+   * Generates the barcode logic.
+   * 
+   * @param logic the logic handler to receive generated events
+   * @param msg the message to encode
+   * @param errorCorrectionLevel the error correction level (one of L, M, Q, H)
+   * @param encoding the message encoding
+   * @param minSize the minimum symbol size constraint or null for no constraint
+   * @param maxSize the maximum symbol size constraint or null for no constraint
+   */
+  public void generateBarcodeLogic(TwoDimBarcodeLogicHandler logic, String msg, String encoding, char errorCorrectionLevel, Dimension minSize, Dimension maxSize) {
 
-        //TODO ZXing doesn't allow to set minSize/maxSize through its API
+    // TODO ZXing doesn't allow to set minSize/maxSize through its API
 
-        ErrorCorrectionLevel zxingErrLevel = getZXingErrorLevel(errorCorrectionLevel);
-        Hashtable hints = createHints(encoding);
+    ErrorCorrectionLevel zxingErrLevel = getZXingErrorLevel(errorCorrectionLevel);
+    Map<EncodeHintType, ?> hints = createHints(encoding);
 
-        QRCode code = new QRCode();
-        try {
-            Encoder.encode(msg, zxingErrLevel, hints, code);
-        } catch (WriterException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        ByteMatrix matrix = code.getMatrix();
-
-        //finally, paint the barcode
-        logic.startBarcode(msg, msg);
-        encodeLowLevel(logic, matrix);
-        logic.endBarcode();
+    QRCode code;
+    try {
+      code = Encoder.encode(msg, zxingErrLevel, hints);
+    } catch (WriterException e) {
+      throw new RuntimeException(e.getMessage(), e);
     }
+    ByteMatrix matrix = code.getMatrix();
 
-    static Hashtable createHints(String encoding) {
-        Hashtable hints = null;
-        if (!"ISO-8859-1".equals(encoding)) {
-            hints = new Hashtable();
-            hints.put(EncodeHintType.CHARACTER_SET, encoding);
-        }
-        return hints;
-    }
+    // finally, paint the barcode
+    logic.startBarcode(msg, msg);
+    encodeLowLevel(logic, matrix);
+    logic.endBarcode();
+  }
 
-    static ErrorCorrectionLevel getZXingErrorLevel(char errorCorrectionLevel) {
-        ErrorCorrectionLevel zxingErrLevel;
-        switch (errorCorrectionLevel) {
-        case ERROR_CORRECTION_LEVEL_L:
-            zxingErrLevel = ErrorCorrectionLevel.L;
-            break;
-        case ERROR_CORRECTION_LEVEL_M:
-            zxingErrLevel = ErrorCorrectionLevel.M;
-            break;
-        case ERROR_CORRECTION_LEVEL_Q:
-            zxingErrLevel = ErrorCorrectionLevel.Q;
-            break;
-        case ERROR_CORRECTION_LEVEL_H:
-            zxingErrLevel = ErrorCorrectionLevel.H;
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Invalid error correction level: " + errorCorrectionLevel);
-        }
-        return zxingErrLevel;
+  static Map<EncodeHintType, ?> createHints(String encoding) {
+    Map<EncodeHintType, Object> hints = null;
+    if (!"ISO-8859-1".equals(encoding)) {
+      hints = new Hashtable<>();
+      hints.put(EncodeHintType.CHARACTER_SET, encoding);
     }
+    return hints;
+  }
 
-    private void encodeLowLevel(TwoDimBarcodeLogicHandler logic, ByteMatrix matrix) {
-        int symbolWidth = matrix.getWidth();
-        int symbolHeight = matrix.getHeight();
-        for (int y = 0; y < symbolHeight; y++) {
-            logic.startRow();
-            for (int x = 0; x < symbolWidth; x++) {
-                logic.addBar(matrix.get(x, y) == 1, 1);
-            }
-            logic.endRow();
-        }
+  static ErrorCorrectionLevel getZXingErrorLevel(char errorCorrectionLevel) {
+    ErrorCorrectionLevel zxingErrLevel;
+    switch (errorCorrectionLevel) {
+      case ERROR_CORRECTION_LEVEL_L:
+        zxingErrLevel = ErrorCorrectionLevel.L;
+        break;
+      case ERROR_CORRECTION_LEVEL_M:
+        zxingErrLevel = ErrorCorrectionLevel.M;
+        break;
+      case ERROR_CORRECTION_LEVEL_Q:
+        zxingErrLevel = ErrorCorrectionLevel.Q;
+        break;
+      case ERROR_CORRECTION_LEVEL_H:
+        zxingErrLevel = ErrorCorrectionLevel.H;
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid error correction level: " + errorCorrectionLevel);
     }
+    return zxingErrLevel;
+  }
+
+  private void encodeLowLevel(TwoDimBarcodeLogicHandler logic, ByteMatrix matrix) {
+    int symbolWidth = matrix.getWidth();
+    int symbolHeight = matrix.getHeight();
+    for (int y = 0; y < symbolHeight; y++) {
+      logic.startRow();
+      for (int x = 0; x < symbolWidth; x++) {
+        logic.addBar(matrix.get(x, y) == 1, 1);
+      }
+      logic.endRow();
+    }
+  }
 
 }

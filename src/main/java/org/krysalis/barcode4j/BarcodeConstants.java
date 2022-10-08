@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,18 +23,18 @@ package org.krysalis.barcode4j;
  */
 public interface BarcodeConstants {
 
-    /**
-     * The namespace used when embedding barcode XML inside other XML dialects
-     * such as XSL-FO.
-     */
-    String NAMESPACE = "http://barcode4j.krysalis.org/ns";
+  /**
+   * The namespace used when embedding barcode XML inside other XML dialects
+   * such as XSL-FO.
+   */
+  String NAMESPACE = "http://barcode4j.krysalis.org/ns";
 
-    /**
-     * For compatibility: The Krysalis Barcode namespace valid before this project
-     * was renamed.
-     */
-    String OLD_NAMESPACE = "http://www.krysalis.org/barcode/ns";
-    
-    /** URL to the Barcode4J website */
-    String WEBSITE = "http://barcode4j.sourceforge.net";
+  /**
+   * For compatibility: The Krysalis Barcode namespace valid before this project
+   * was renamed.
+   */
+  String OLD_NAMESPACE = "http://www.krysalis.org/barcode/ns";
+
+  /** URL to the Barcode4J website */
+  String WEBSITE = "http://barcode4j.sourceforge.net";
 }

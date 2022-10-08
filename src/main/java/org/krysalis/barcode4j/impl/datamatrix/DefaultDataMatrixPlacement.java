@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,35 +25,39 @@ import java.util.Arrays;
  * (one bit per byte to allow for checking whether a bit has been set or not).
  */
 class DefaultDataMatrixPlacement extends DataMatrixPlacement {
-    
-    /** Buffer for the bits */
-    protected byte[] bits;
-    
-    /**
-     * Main constructor
-     * @param codewords the codewords to place
-     * @param numcols the number of columns
-     * @param numrows the number of rows
-     */
-    public DefaultDataMatrixPlacement(String codewords, int numcols, int numrows) {
-        super(codewords, numcols, numrows);
-        this.bits = new byte[numcols * numrows];
-        Arrays.fill(this.bits, (byte)-1); //Initialize with "not set" value
-    }
-    
-    /** @see org.krysalis.barcode4j.impl.datamatrix.DataMatrixPlacement#getBit(int, int) */
-    protected boolean getBit(int col, int row) {
-        return bits[row * numcols + col] == 1;
-    }
 
-    /** @see org.krysalis.barcode4j.impl.datamatrix.DataMatrixPlacement#setBit(int, int, boolean) */
-    protected void setBit(int col, int row, boolean bit) {
-        bits[row * numcols + col] = (bit ? (byte)1 : (byte)0);
-    }
+  /** Buffer for the bits */
+  protected byte[] bits;
 
-    /** @see org.krysalis.barcode4j.impl.datamatrix.DataMatrixPlacement#hasBit(int, int) */
-    protected boolean hasBit(int col, int row) {
-        return bits[row * numcols + col] >= 0;
-    }
-    
+  /**
+   * Main constructor
+   * 
+   * @param codewords the codewords to place
+   * @param numcols the number of columns
+   * @param numrows the number of rows
+   */
+  public DefaultDataMatrixPlacement(String codewords, int numcols, int numrows) {
+    super(codewords, numcols, numrows);
+    this.bits = new byte[numcols * numrows];
+    Arrays.fill(this.bits, (byte) -1); // Initialize with "not set" value
+  }
+
+  /** @see org.krysalis.barcode4j.impl.datamatrix.DataMatrixPlacement#getBit(int, int) */
+  @Override
+  protected boolean getBit(int col, int row) {
+    return bits[row * numcols + col] == 1;
+  }
+
+  /** @see org.krysalis.barcode4j.impl.datamatrix.DataMatrixPlacement#setBit(int, int, boolean) */
+  @Override
+  protected void setBit(int col, int row, boolean bit) {
+    bits[row * numcols + col] = (bit ? (byte) 1 : (byte) 0);
+  }
+
+  /** @see org.krysalis.barcode4j.impl.datamatrix.DataMatrixPlacement#hasBit(int, int) */
+  @Override
+  protected boolean hasBit(int col, int row) {
+    return bits[row * numcols + col] >= 0;
+  }
+
 }

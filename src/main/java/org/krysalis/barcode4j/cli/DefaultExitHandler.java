@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,16 +23,18 @@ package org.krysalis.barcode4j.cli;
  */
 public class DefaultExitHandler extends AbstractExitHandler {
 
-    /** {@inheritDoc} */
-    public void failureExit(Main app, String msg, Throwable t, int exitCode) {
-        super.failureExit(app, msg, t, exitCode);
-        System.exit(exitCode);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void failureExit(Main app, String msg, Throwable t, int exitCode) {
+    super.failureExit(app, msg, t, exitCode);
+    System.exit(exitCode);
+  }
 
-    /** {@inheritDoc} */
-    public void successfulExit(Main app) {
-        super.successfulExit(app);
-        System.exit(0);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void successfulExit(Main app) {
+    super.successfulExit(app);
+    System.exit(0);
+  }
 
 }

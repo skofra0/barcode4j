@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,47 +26,49 @@ import org.krysalis.barcode4j.TextAlignment;
  */
 public abstract class AbstractCanvasProvider implements CanvasProvider {
 
-    /** the cached barcode dimensions */
-    protected BarcodeDimension bardim;
+  /** the cached barcode dimensions */
+  protected BarcodeDimension bardim;
 
-    /** the barcode orientation (0, 90, 180, 270) */
-    private int orientation;
-    
-    /**
-     * Main constructor.
-     * @param orientation the orientation of the barcode
-     */
-    public AbstractCanvasProvider(int orientation) {
-        this.orientation = BarcodeDimension.normalizeOrientation(orientation);
-    }
-    
-    /** {@inheritDoc} */
-    public void establishDimensions(BarcodeDimension dim) {
-        this.bardim = dim;
-    }
+  /** the barcode orientation (0, 90, 180, 270) */
+  private int orientation;
 
-    /** {@inheritDoc} */
-    public BarcodeDimension getDimensions() {
-        return this.bardim;
-    }
-    
-    /** {@inheritDoc} */
-    public int getOrientation() {
-        return this.orientation;
-    }
+  /**
+   * Main constructor.
+   * 
+   * @param orientation the orientation of the barcode
+   */
+  public AbstractCanvasProvider(int orientation) {
+    this.orientation = BarcodeDimension.normalizeOrientation(orientation);
+  }
 
-    /** {@inheritDoc} */
-    public void deviceJustifiedText(String text,
-            double x1, double x2, double y1,
-            String fontName, double fontSize) {
-        deviceText(text, x1, x2, y1, fontName, fontSize, TextAlignment.TA_JUSTIFY);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void establishDimensions(BarcodeDimension dim) {
+    this.bardim = dim;
+  }
 
-    /** {@inheritDoc} */
-    public void deviceCenteredText(String text,
-            double x1, double x2, double y1,
-            String fontName, double fontSize) {
-        deviceText(text, x1, x2, y1, fontName, fontSize, TextAlignment.TA_CENTER);
-    }
+  /** {@inheritDoc} */
+  @Override
+  public BarcodeDimension getDimensions() {
+    return this.bardim;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int getOrientation() {
+    return this.orientation;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void deviceJustifiedText(String text, double x1, double x2, double y1, String fontName, double fontSize) {
+    deviceText(text, x1, x2, y1, fontName, fontSize, TextAlignment.TA_JUSTIFY);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void deviceCenteredText(String text, double x1, double x2, double y1, String fontName, double fontSize) {
+    deviceText(text, x1, x2, y1, fontName, fontSize, TextAlignment.TA_CENTER);
+  }
 
 }

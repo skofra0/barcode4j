@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,112 +33,113 @@ import org.krysalis.barcode4j.output.CanvasProvider;
  */
 public class ITF14Bean extends Interleaved2Of5Bean {
 
-    static final double DEFAULT_MODULE_WIDTH = 1.016; //mm (0.04in)
-    static final double DEFAULT_WIDE_FACTORY = 2.5;
-    static final double DEFAULT_BAR_HEIGHT = 32; //mm (1.25in)
-    static final double DEFAULT_BEARER_BAR_WIDTH = 4.8; //mm (0.19in)
-    static final boolean DEFAULT_BEARER_BOX = true;
+  static final double DEFAULT_MODULE_WIDTH = 1.016; // mm (0.04in)
+  static final double DEFAULT_WIDE_FACTORY = 2.5;
+  static final double DEFAULT_BAR_HEIGHT = 32; // mm (1.25in)
+  static final double DEFAULT_BEARER_BAR_WIDTH = 4.8; // mm (0.19in)
+  static final boolean DEFAULT_BEARER_BOX = true;
 
-    private double bearerBarWidth;
-    private boolean bearerBox;
+  private double bearerBarWidth;
+  private boolean bearerBox;
 
-    /**
-     * Default constructor.
-     */
-    public ITF14Bean() {
-        super();
-        setModuleWidth(DEFAULT_MODULE_WIDTH);
-        setQuietZone(10 * this.moduleWidth);
-        doQuietZone(true);
-        setWideFactor(DEFAULT_WIDE_FACTORY);
-        setBarHeight(DEFAULT_BAR_HEIGHT);
-        setBearerBarWidth(DEFAULT_BEARER_BAR_WIDTH);
-        setBearerBox(DEFAULT_BEARER_BOX);
-        setFontSize(3 * getBarWidth(2));
-        setDisplayChecksum(true);
+  /**
+   * Default constructor.
+   */
+  public ITF14Bean() {
+    super();
+    setModuleWidth(DEFAULT_MODULE_WIDTH);
+    setQuietZone(10 * this.moduleWidth);
+    doQuietZone(true);
+    setWideFactor(DEFAULT_WIDE_FACTORY);
+    setBarHeight(DEFAULT_BAR_HEIGHT);
+    setBearerBarWidth(DEFAULT_BEARER_BAR_WIDTH);
+    setBearerBox(DEFAULT_BEARER_BOX);
+    setFontSize(3 * getBarWidth(2));
+    setDisplayChecksum(true);
+  }
+
+  /**
+   * Indicates whether a bearer box is generated or just horizontal bearer bars.
+   * 
+   * @return true if a bearer box is generated, false if horizontal bearer bars are generated.
+   */
+  public boolean isBearerBox() {
+    return this.bearerBox;
+  }
+
+  /**
+   * Controls whether a bearer box is generated or just horizontal bearer bars.
+   * 
+   * @param value true for a bearer box, false for horizontal bearer bars.
+   */
+  public void setBearerBox(boolean value) {
+    this.bearerBox = value;
+  }
+
+  /**
+   * Returns the bearer bar width.
+   * 
+   * @return the bearer bar width (in millimeters)
+   */
+  public double getBearerBarWidth() {
+    return this.bearerBarWidth;
+  }
+
+  /**
+   * Sets the bearer bar width. The nominal value is 4.8mm (0.19in).
+   * 
+   * @param width the bearer bar width (in millimeters)
+   */
+  public void setBearerBarWidth(double width) {
+    this.bearerBarWidth = width;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void doQuietZone(boolean value) {
+    if (!value) {
+      throw new IllegalArgumentException("Quiet zone may not be disabled for ITF-14!");
     }
+    super.doQuietZone(value);
+  }
 
-    /**
-     * Indicates whether a bearer box is generated or just horizontal bearer bars.
-     * @return true if a bearer box is generated, false if horizontal bearer bars are generated.
-     */
-    public boolean isBearerBox() {
-        return this.bearerBox;
+  /**
+   * Validates the barcode bean's settings.
+   */
+  protected void validate() {
+    if (getQuietZone() < 10 * getModuleWidth()) {
+      throw new IllegalStateException("Quiet zone must be at least 10 times the module width!");
     }
+  }
 
-    /**
-     * Controls whether a bearer box is generated or just horizontal bearer bars.
-     * @param value true for a bearer box, false for horizontal bearer bars.
-     */
-    public void setBearerBox(boolean value) {
-        this.bearerBox = value;
+  /** {@inheritDoc} */
+  @Override
+  public void generateBarcode(CanvasProvider canvas, String msg) {
+    if ((msg == null) || (msg.length() == 0)) {
+      throw new NullPointerException("Parameter msg must not be empty");
     }
+    validate();
 
-    /**
-     * Returns the bearer bar width.
-     * @return the bearer bar width (in millimeters)
-     */
-    public double getBearerBarWidth() {
-        return this.bearerBarWidth;
+    ClassicBarcodeLogicHandler handler = new ITF14CanvasLogicHandler(this, new Canvas(canvas));
+
+    ITF14LogicImpl impl = new ITF14LogicImpl(getChecksumMode(), isDisplayChecksum());
+    impl.generateBarcodeLogic(handler, msg);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public BarcodeDimension calcDimensions(String msg) {
+    int msgLen = msg.length();
+    if (getChecksumMode() == ChecksumMode.CP_ADD) {
+      msgLen++;
     }
-
-    /**
-     * Sets the bearer bar width. The nominal value is 4.8mm (0.19in).
-     * @param width the bearer bar width (in millimeters)
-     */
-    public void setBearerBarWidth(double width) {
-        this.bearerBarWidth = width;
+    if ((msgLen % 2) != 0) {
+      msgLen++; // Compensate for odd number of characters
     }
-
-    /** {@inheritDoc} */
-    public void doQuietZone(boolean value) {
-        if (!value) {
-            throw new IllegalArgumentException("Quiet zone may not be disabled for ITF-14!");
-        }
-        super.doQuietZone(value);
-    }
-
-    /**
-     * Validates the barcode bean's settings.
-     */
-    protected void validate() {
-        if (getQuietZone() < 10 * getModuleWidth()) {
-            throw new IllegalStateException(
-                    "Quiet zone must be at least 10 times the module width!");
-        }
-    }
-
-    /** {@inheritDoc} */
-    public void generateBarcode(CanvasProvider canvas, String msg) {
-        if ((msg == null)
-                || (msg.length() == 0)) {
-            throw new NullPointerException("Parameter msg must not be empty");
-        }
-        validate();
-
-        ClassicBarcodeLogicHandler handler =
-                new ITF14CanvasLogicHandler(this, new Canvas(canvas));
-
-        ITF14LogicImpl impl = new ITF14LogicImpl(
-                getChecksumMode(), isDisplayChecksum());
-        impl.generateBarcodeLogic(handler, msg);
-    }
-
-    /** {@inheritDoc} */
-    public BarcodeDimension calcDimensions(String msg) {
-        int msgLen = msg.length();
-        if (getChecksumMode() == ChecksumMode.CP_ADD) {
-            msgLen++;
-        }
-        if ((msgLen % 2) != 0) {
-            msgLen++; //Compensate for odd number of characters
-        }
-        final double charwidth = 2 * getWideFactor() + 3;
-        final double width = ((msgLen * charwidth) + 6 + getWideFactor()) * getModuleWidth();
-        final double qz = getQuietZone();
-        final double vBearerBar = (isBearerBox() ? getBearerBarWidth() : 0.0);
-        return new BarcodeDimension(width, getHeight(),
-                width + (2 * qz) + (2 * vBearerBar), getHeight() + (2 * getBearerBarWidth()),
-                vBearerBar + getQuietZone(), getBearerBarWidth());
-    }
+    final double charwidth = 2 * getWideFactor() + 3;
+    final double width = ((msgLen * charwidth) + 6 + getWideFactor()) * getModuleWidth();
+    final double qz = getQuietZone();
+    final double vBearerBar = (isBearerBox() ? getBearerBarWidth() : 0.0);
+    return new BarcodeDimension(width, getHeight(), width + (2 * qz) + (2 * vBearerBar), getHeight() + (2 * getBearerBarWidth()), vBearerBar + getQuietZone(), getBearerBarWidth());
+  }
 }

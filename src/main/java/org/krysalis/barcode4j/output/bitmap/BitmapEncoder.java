@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,22 +27,23 @@ import java.io.OutputStream;
  */
 public interface BitmapEncoder {
 
-    /**
-     * Returns an array of MIME types supported.
-     * @return the array of MIME types
-     */
-    String[] getSupportedMIMETypes();
-    
-    /**
-     * Encodes a BufferedImage to a target format and writes it to the 
-     * OutputStream.
-     * @param image the image to encode
-     * @param out the OutputStream to write the image to
-     * @param mime the MIME type in which to encode the image
-     * @param resolution the resolution in dpi of the image
-     * @throws IOException in case of an I/O problem
-     */
-    void encode(BufferedImage image, OutputStream out, 
-            String mime, int resolution) throws IOException;
+  /**
+   * Returns an array of MIME types supported.
+   * 
+   * @return the array of MIME types
+   */
+  String[] getSupportedMIMETypes();
+
+  /**
+   * Encodes a BufferedImage to a target format and writes it to the
+   * OutputStream.
+   * 
+   * @param image the image to encode
+   * @param out the OutputStream to write the image to
+   * @param mime the MIME type in which to encode the image
+   * @param resolution the resolution in dpi of the image
+   * @throws IOException in case of an I/O problem
+   */
+  void encode(BufferedImage image, OutputStream out, String mime, int resolution) throws IOException;
 
 }

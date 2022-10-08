@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,56 +23,61 @@ package org.krysalis.barcode4j.cli;
  */
 public class ExitHandlerForTests extends AbstractExitHandler {
 
-    private String lastMsg;
-    private Throwable lastThrowable;
-    private int lastExitCode = 0;
+  private String lastMsg;
+  private Throwable lastThrowable;
+  private int lastExitCode = 0;
 
-    public void reset() {
-        this.lastMsg = null;
-        this.lastThrowable = null;
-        this.lastExitCode = 0;
-    }
+  public void reset() {
+    this.lastMsg = null;
+    this.lastThrowable = null;
+    this.lastExitCode = 0;
+  }
 
-    /**
-     * Returns the last recorded exit code.
-     * @return the exit code
-     */
-    public int getLastExitCode() {
-        return lastExitCode;
-    }
+  /**
+   * Returns the last recorded exit code.
+   * 
+   * @return the exit code
+   */
+  public int getLastExitCode() {
+    return lastExitCode;
+  }
 
-    /**
-     * Returns the last recorded error message.
-     * @return the error message
-     */
-    public String getLastMsg() {
-        return lastMsg;
-    }
+  /**
+   * Returns the last recorded error message.
+   * 
+   * @return the error message
+   */
+  public String getLastMsg() {
+    return lastMsg;
+  }
 
-    /**
-     * Returns the last recorded Throwable.
-     * @return a Throwable
-     */
-    public Throwable getLastThrowable() {
-        return lastThrowable;
-    }
+  /**
+   * Returns the last recorded Throwable.
+   * 
+   * @return a Throwable
+   */
+  public Throwable getLastThrowable() {
+    return lastThrowable;
+  }
 
-    /** {@inheritDoc} */
-    public void failureExit(Main app, String msg, Throwable t, int exitCode) {
-        super.failureExit(app, msg, t, exitCode);
-        this.lastMsg = msg;
-        this.lastThrowable = t;
-        this.lastExitCode = exitCode;
-        throw new SimulateVMExitError();
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void failureExit(Main app, String msg, Throwable t, int exitCode) {
+    super.failureExit(app, msg, t, exitCode);
+    this.lastMsg = msg;
+    this.lastThrowable = t;
+    this.lastExitCode = exitCode;
+    throw new SimulateVMExitError();
+  }
 
-    /** {@inheritDoc} */
-    public void successfulExit(Main app) {
-        super.successfulExit(app);
-        this.lastMsg = null;
-        this.lastThrowable = null;
-        this.lastExitCode = 0;
-        throw new SimulateVMExitError();
-    }
+  /** {@inheritDoc} */
+  @Override
+  public void successfulExit(Main app) {
+    super.successfulExit(app);
+    this.lastMsg = null;
+    this.lastThrowable = null;
+    this.lastExitCode = 0;
+    throw new SimulateVMExitError();
+  }
 
 }

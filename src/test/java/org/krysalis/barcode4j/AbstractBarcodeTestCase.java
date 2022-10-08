@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,7 @@ import java.io.File;
 import junit.framework.TestCase;
 
 /**
- * Abstract base test class for tests. Provides a bad directory that is 
+ * Abstract base test class for tests. Provides a bad directory that is
  * configurable from outside.
  * 
  * @author Jeremias Maerki
@@ -28,24 +28,25 @@ import junit.framework.TestCase;
  */
 public abstract class AbstractBarcodeTestCase extends TestCase {
 
-    /**
-     * @see junit.framework.TestCase#TestCase(String)
-     */
-    public AbstractBarcodeTestCase(String name) {
-        super(name);
-    }
+  /**
+   * @see junit.framework.TestCase#TestCase(String)
+   */
+  public AbstractBarcodeTestCase(String name) {
+    super(name);
+  }
 
-    /**
-     * Returns the base directory to use for the tests.
-     * @return the base directory
-     */
-    protected File getBaseDir() {
-        String basedir = System.getProperty("basedir");
-        if (basedir != null) {
-            return new File(basedir);
-        } else {
-            return new File(".");
-        }
+  /**
+   * Returns the base directory to use for the tests.
+   * 
+   * @return the base directory
+   */
+  protected File getBaseDir() {
+    String basedir = System.getProperty("basedir");
+    if (basedir != null) {
+      return new File(basedir);
+    } else {
+      return new File(".");
     }
+  }
 
 }

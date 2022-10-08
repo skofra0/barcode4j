@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,25 +31,25 @@ import junit.framework.TestCase;
  */
 public class EPSOutputTest extends TestCase {
 
-    public EPSOutputTest(String name) {
-        super(name);
-    }
+  public EPSOutputTest(String name) {
+    super(name);
+  }
 
-    public void testEPS() throws Exception {
-        DefaultConfiguration cfg = new DefaultConfiguration("cfg");
-        cfg.addChild(new DefaultConfiguration("intl2of5"));
+  public void testEPS() throws Exception {
+    DefaultConfiguration cfg = new DefaultConfiguration("cfg");
+    cfg.addChild(new DefaultConfiguration("intl2of5"));
 
-        BarcodeUtil util = BarcodeUtil.getInstance();
-        BarcodeGenerator gen = util.createBarcodeGenerator(cfg);
-        
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        EPSCanvasProvider provider = new EPSCanvasProvider(baout, 0); 
+    BarcodeUtil util = BarcodeUtil.getInstance();
+    BarcodeGenerator gen = util.createBarcodeGenerator(cfg);
 
-        //Create Barcode and render it to EPS
-        gen.generateBarcode(provider, "123");
-        provider.finish();
-        
-        assertTrue(baout.size() > 0);
-    }
+    ByteArrayOutputStream baout = new ByteArrayOutputStream();
+    EPSCanvasProvider provider = new EPSCanvasProvider(baout, 0);
+
+    // Create Barcode and render it to EPS
+    gen.generateBarcode(provider, "123");
+    provider.finish();
+
+    assertTrue(baout.size() > 0);
+  }
 
 }
