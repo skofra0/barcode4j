@@ -33,14 +33,14 @@
 	<repositories>
 		<repository>
 			<id>DeemMaven</id>
-			<url>http://51.120.242.160:8081/repository/maven-public</url>
+			<url>https://maven.deem.no:8443/repository/maven-public</url>
 		</repository>
 	</repositories>
 
 	<distributionManagement>
 		<repository>
 			<id>DeemMaven</id>
-			<url>http://51.120.242.160:8081/repository/thirdparty</url>
+			<url>https://maven.deem.no:8443/repository/thirdparty</url>
 		</repository>
 	</distributionManagement>
 
